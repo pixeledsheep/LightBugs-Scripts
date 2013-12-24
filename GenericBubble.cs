@@ -36,7 +36,26 @@ public class GenericBubble : MonoBehaviour {
 		
 		//	new movement code here.
 		
-		Invoke("MoveMeNow", 2f);
+		gameObject.transform.localPosition = new Vector3(
+			GetRandomX(),
+			GameObject.Find("Bottom_Margin").transform.localPosition.y,
+			gameObject.transform.localPosition.z
+			);
+		
+		float _moveDuration = Random.Range(150f, 450f) / 100f;
+		
+		Go.to(gameObject.transform, _moveDuration, new GoTweenConfig()
+			.localPosition(new Vector3(
+					gameObject.transform.localPosition.x,
+					GameObject.Find("Top_Margin").transform.localPosition.y,
+					gameObject.transform.localPosition.z
+					)
+				)
+			.setEaseType(GoEaseType.Linear)
+			);
+		
+		
+		Invoke("MoveMeNow", _moveDuration + .015f);
 	}
 	
 	public void MoveMeNow() {
@@ -95,35 +114,18 @@ public class GenericBubble : MonoBehaviour {
 	/// </summary>
 	IEnumerator InflateMe() {
 		
-		MouthStartingPosY = Random.Range(-170f, 170f) / 10f;
-		//	Debug.Log(gameObject.transform.name + " ->" + MouthStartingPosY);
-		
-		Go.to(gameObject.transform, 2f, new GoTweenConfig()
-			.localPosition(new Vector3(
-					gameObject.transform.localPosition.x,
-					MouthStartingPosY,
-					gameObject.transform.localPosition.z
-					)
-				)
-			.setEaseType(GoEaseType.ExpoOut)
-			);
-		
 		yield return new WaitForSeconds(.15f);
 		
 		float _tempSizeindexer = Random.Range(100f, 250f) / 1000f;
 		float _newDiameter = SetPercent(StartingSize) + _tempSizeindexer;
-		//	Debug.Log("->	_newDiameter: " + _newDiameter);
 		
-		Go.to(gameObject.transform, 1f, new GoTweenConfig()
-			.scale(new Vector3(
-				_newDiameter, 
-				_newDiameter, 
-				_newDiameter
-			))
-			.setEaseType(GoEaseType.ElasticOut)
-		);
+		gameObject.transform.localScale = new Vector3(
+			_newDiameter,
+			_newDiameter,
+			_newDiameter
+			);
 		
-		Invoke("MoveMeTo", 2f);
+		Invoke("MoveMeTo", 1f);
 	}
 	
 	// Update is called once per frame

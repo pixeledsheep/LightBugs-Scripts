@@ -22,7 +22,7 @@ public class Main : MonoBehaviour {
 	public void SpawnBubbles() {
 		
 		
-		for (int i = 0; i < 25; i++) {
+		for (int i = 0; i < 10; i++) {
 			BubbleStartDelay += .05f;
 			GameObject _tempBubble = Instantiate(BubbleRef) as GameObject;
 			
