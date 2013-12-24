@@ -4,6 +4,7 @@ using System.Collections;
 public class BigBug : MonoBehaviour {
 	
 	//	UpperJaw: 6.16, open: 38.8
+	public GameObject MainRef;
 	public GameObject MouthBgRef;
 	public GameObject UpperJawRef;
 	public GameObject LowerJawRef;
@@ -16,6 +17,7 @@ public class BigBug : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Init();
+		SetMyInitPose();
 	}
 	
 	/// <summary>
@@ -35,6 +37,14 @@ public class BigBug : MonoBehaviour {
 		EnterScene();
 	}
 	
+	public void SetMyInitPose() {
+		UpperJawRef.transform.localPosition = new Vector3(
+			UpperJawRef.transform.localPosition.x,
+			6.16f,
+			UpperJawRef.transform.localPosition.z
+			);
+	}
+	
 	/// <summary>
 	/// Playing BUG Enters the scene.
 	/// </summary>
@@ -47,21 +57,31 @@ public class BigBug : MonoBehaviour {
 		SetCameraZoom(9.25f, 1.75f, 1.5f);
 		SetCameraPosXY(new Vector2(0, .93f), 1.5f);
 		
-		Invoke("OpenMouth", 1.55f);
+		//	Invoke("OpenMouth", 1.55f);
 		//	Invoke("LeaveScene", 3f);
+		
+		StartCoroutine("OpenMouth");
 	}
 	
 	/// <summary>
 	/// Playing BUG opens the mouth.
 	/// </summary>
-	public void OpenMouth() {
+	public IEnumerator OpenMouth() {
+		
+		yield return new WaitForSeconds(1.55f);
 		
 		Go.to(UpperJawRef.transform, 1f, new GoTweenConfig()
 			.localPosition(new Vector3(UpperJawRef.transform.localPosition.x, 38.7f, UpperJawRef.transform.localPosition.z))
 			.setEaseType(GoEaseType.ElasticOut)
 			);
 		
+		yield return new WaitForSeconds(.5f);
+		MainRef.GetComponent<Main>().SpawnBubbles();
+		
+		yield return new WaitForSeconds(1.25f);
+		SetCameraZoom("play pos");
 		//	Invoke("CloseMouth", 3f);
+		
 	}
 	
 	/// <summary>
@@ -123,7 +143,22 @@ public class BigBug : MonoBehaviour {
 			.vector2Prop("CameraZoom", new Vector2(_newZoom, 0))
 			.setDelay(_zoomDelay)
 			.setEaseType(GoEaseType.ElasticOut)
+		);
+	}
+	
+	/// <summary>
+	/// Sets the camera zoom using a '_preset' parameter.
+	/// </summary>
+	/// <param name='_preset'>
+	/// _preset.
+	/// </param>
+	public void SetCameraZoom(string _preset) {
+		if (_preset == "play pos") {
+			Go.to(GetComponent<BigBug>(), 2f, new GoTweenConfig()
+				.vector2Prop("CameraZoom", new Vector2(12f, 0))
+				.setEaseType(GoEaseType.ExpoOut)
 			);
+		}
 	}
 	
 	/// <summary>
