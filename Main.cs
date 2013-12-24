@@ -31,7 +31,6 @@ public class Main : MonoBehaviour {
 			
 			_tempBubble.GetComponent<GenericBubble>().MyDelay = BubbleStartDelay;
 			StartCoroutine(_tempBubble.GetComponent<GenericBubble>().SetMeUp());
-			//	_tempBubble.GetComponent<GenericBubble>().SetMeUp();
 		}
 	}
 	
