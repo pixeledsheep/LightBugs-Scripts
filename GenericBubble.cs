@@ -114,7 +114,7 @@ public class GenericBubble : MonoBehaviour {
 	/// </summary>
 	IEnumerator InflateMe() {
 		
-		yield return new WaitForSeconds(.15f);
+		yield return new WaitForSeconds(1f);
 		
 		float _tempSizeindexer = Random.Range(100f, 250f) / 1000f;
 		float _newDiameter = SetPercent(StartingSize) + _tempSizeindexer;

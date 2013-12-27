@@ -40,7 +40,7 @@ public class BigBug : MonoBehaviour {
 	public void SetMyInitPose() {
 		UpperJawRef.transform.localPosition = new Vector3(
 			UpperJawRef.transform.localPosition.x,
-			6.16f,
+			0,
 			UpperJawRef.transform.localPosition.z
 			);
 	}
@@ -54,12 +54,6 @@ public class BigBug : MonoBehaviour {
 			.setEaseType(GoEaseType.ExpoOut)
 			);
 		
-		SetCameraZoom(9.25f, 1.75f, 1.5f);
-		SetCameraPosXY(new Vector2(0, .93f), 1.5f);
-		
-		//	Invoke("OpenMouth", 1.55f);
-		//	Invoke("LeaveScene", 3f);
-		
 		StartCoroutine("OpenMouth");
 	}
 	
@@ -68,19 +62,26 @@ public class BigBug : MonoBehaviour {
 	/// </summary>
 	public IEnumerator OpenMouth() {
 		
+		Debug.Log("cmaera height: " + Camera.main.pixelHeight);
+		float _topLimit = MainRef.GetComponent<Main>().OutputMyYScreenPos(gameObject, Camera.main.pixelHeight-Camera.main.pixelHeight/4);
 		yield return new WaitForSeconds(1.55f);
 		
 		Go.to(UpperJawRef.transform, 1f, new GoTweenConfig()
-			.localPosition(new Vector3(UpperJawRef.transform.localPosition.x, 38.7f, UpperJawRef.transform.localPosition.z))
+			.position(
+				new Vector3(
+					UpperJawRef.transform.position.x,
+					_topLimit,
+					UpperJawRef.transform.position.z
+				)
+			)
 			.setEaseType(GoEaseType.ElasticOut)
 			);
 		
-		yield return new WaitForSeconds(.5f);
+		//	yield return new WaitForSeconds(.5f);
 		MainRef.GetComponent<Main>().SpawnBubbles();
 		
-		yield return new WaitForSeconds(1.25f);
+		yield return new WaitForSeconds(.5f);
 		SetCameraZoom("play pos");
-		//	Invoke("CloseMouth", 3f);
 		
 	}
 	
@@ -90,7 +91,7 @@ public class BigBug : MonoBehaviour {
 	public void CloseMouth() {
 		
 		Go.to(UpperJawRef.transform, .75f, new GoTweenConfig()
-			.localPosition(new Vector3(UpperJawRef.transform.localPosition.x, 6.16f, UpperJawRef.transform.localPosition.z))
+			.localPosition(new Vector3(UpperJawRef.transform.localPosition.x, 0f, UpperJawRef.transform.localPosition.z))
 			.setEaseType(GoEaseType.BounceOut)
 			);
 		
@@ -114,13 +115,14 @@ public class BigBug : MonoBehaviour {
 	/// </summary>
 	public void SyncMouthBg() {
 		JawDifY = UpperJawRef.transform.position.y - LowerJawRef.transform.position.y;
+		//	Debug.Log(UpperJawRef.transform.localPosition.y);
 		
 		if (JawDifY / 13.1f < .55f) {
 			MouthBgRef.transform.localScale = new Vector3(.75f, 0, 0);
 		} else {
 			MouthBgRef.transform.localScale = new Vector3(
 				.95f,
-				JawDifY / 13.1f,
+				UpperJawRef.transform.localPosition.y / 33.15f,
 				MouthBgRef.transform.localScale.z
 				);
 		}
@@ -142,7 +144,7 @@ public class BigBug : MonoBehaviour {
 		Go.to(GetComponent<BigBug>(), _zoomSpeed, new GoTweenConfig()
 			.vector2Prop("CameraZoom", new Vector2(_newZoom, 0))
 			.setDelay(_zoomDelay)
-			.setEaseType(GoEaseType.ElasticOut)
+			.setEaseType(GoEaseType.ExpoOut)
 		);
 	}
 	
@@ -154,8 +156,8 @@ public class BigBug : MonoBehaviour {
 	/// </param>
 	public void SetCameraZoom(string _preset) {
 		if (_preset == "play pos") {
-			Go.to(GetComponent<BigBug>(), 2f, new GoTweenConfig()
-				.vector2Prop("CameraZoom", new Vector2(12f, 0))
+			Go.to(GetComponent<BigBug>(), 1f, new GoTweenConfig()
+				.vector2Prop("CameraZoom", new Vector2(9.25f, 0))
 				.setEaseType(GoEaseType.ExpoOut)
 			);
 		}
